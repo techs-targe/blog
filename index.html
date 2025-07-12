@@ -157,13 +157,7 @@ const posts = [
         
         /* ビューカウンター */
         .view-counter {
-            margin-top: 40px;
-            text-align: left;
-        }
-        
-        .view-counter img {
-            height: 20px;
-            vertical-align: middle;
+            display: none;  /* 非表示にするがカウントは継続 */
         }
         
         @media (max-width: 768px) {
@@ -290,8 +284,8 @@ const posts = [
             url.search = '';
             window.history.pushState({}, '', url);
             
-            // 記事一覧ではカウンターを非表示
-            updateViewCounter(null);
+            // 記事一覧用のカウンターを設定
+            updateViewCounter('LIST');
         }
         
         // 記事表示
@@ -354,16 +348,12 @@ const posts = [
         }
         
         // ビューカウンターを更新
-        function updateViewCounter(articleId) {
+        function updateViewCounter(id) {
             const counterDiv = document.getElementById('view-counter');
-            if (currentView === 'article' && articleId) {
-                // 記事ごとのユニークなIDを使用
-                const counterId = `techs-targe-blog-${articleId}`;
+            if (id) {
+                // ページごとのユニークなIDを使用
+                const counterId = `techs-targe-blog-${id}`;
                 counterDiv.innerHTML = `<img src="https://komarev.com/ghpvc/?username=${counterId}&label=views&color=000000&style=flat-square" alt="views" />`;
-                counterDiv.style.display = 'block';
-            } else {
-                // 記事一覧では非表示
-                counterDiv.style.display = 'none';
             }
         }
         
