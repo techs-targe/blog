@@ -230,8 +230,8 @@ const posts = [
             <a href="#" onclick="shareToX(); return false;">share</a>
         </div>
         
-        <div class="view-counter">
-            <img src="https://komarev.com/ghpvc/?username=techs-targe-blog&label=&color=ffffff&style=flat-square" alt="views" />
+        <div class="view-counter" id="view-counter">
+            <!-- カウンターは動的に挿入 -->
         </div>
     </div>
     
@@ -289,6 +289,9 @@ const posts = [
             const url = new URL(window.location);
             url.search = '';
             window.history.pushState({}, '', url);
+            
+            // 記事一覧ではカウンターを非表示
+            updateViewCounter(null);
         }
         
         // 記事表示
@@ -310,6 +313,9 @@ const posts = [
             const url = new URL(window.location);
             url.searchParams.set('article', id);
             window.history.pushState({}, '', url);
+            
+            // 記事ごとのビューカウンターを更新
+            updateViewCounter(id);
             
             // 記事を読み込み
             const contentDiv = document.getElementById('article-content');
@@ -345,6 +351,20 @@ const posts = [
             const text = encodeURIComponent(`${title} - techs-targe`);
             const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+        
+        // ビューカウンターを更新
+        function updateViewCounter(articleId) {
+            const counterDiv = document.getElementById('view-counter');
+            if (currentView === 'article' && articleId) {
+                // 記事ごとのユニークなIDを使用
+                const counterId = `techs-targe-blog-${articleId}`;
+                counterDiv.innerHTML = `<img src="https://komarev.com/ghpvc/?username=${counterId}&label=views&color=000000&style=flat-square" alt="views" />`;
+                counterDiv.style.display = 'block';
+            } else {
+                // 記事一覧では非表示
+                counterDiv.style.display = 'none';
+            }
         }
         
         // ページ読み込み時に初期化
