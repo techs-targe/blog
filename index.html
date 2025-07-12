@@ -292,9 +292,7 @@
                 const response = await fetch(`posts/${id}.html`);
                 if (response.ok) {
                     const content = await response.text();
-                    const post = posts.find(p => p.id === id);
-                    const title = post ? `<h3>${post.title}</h3>` : '';
-                    contentDiv.innerHTML = title + content;
+                    contentDiv.innerHTML = content;
                 } else {
                     contentDiv.innerHTML = '<p>記事が見つかりません。</p>';
                 }
