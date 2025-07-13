@@ -9,6 +9,20 @@ const posts = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- X Cards / Open Graph -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@techs_targe">
+    <meta name="twitter:title" content="techs-targe" id="twitter-title">
+    <meta name="twitter:description" content="AI時代の技術と人間の統合を探求するブログ" id="twitter-description">
+    <meta name="twitter:image" content="https://techs-targe.github.io/blog/images/default.png" id="twitter-image">
+    
+    <meta property="og:title" content="techs-targe" id="og-title">
+    <meta property="og:description" content="AI時代の技術と人間の統合を探求するブログ" id="og-description">
+    <meta property="og:image" content="https://techs-targe.github.io/blog/images/default.png" id="og-image">
+    <meta property="og:url" content="https://techs-targe.github.io/blog/" id="og-url">
+    <meta property="og:type" content="website">
+    
     <style>
         * {
             margin: 0;
@@ -286,6 +300,9 @@ const posts = [
             
             // 記事一覧用のカウンターを設定
             updateViewCounter('LIST');
+            
+            // X Cards / Open Graph メタデータを更新（記事一覧用）
+            updateMetaTags('LIST');
         }
         
         // 記事表示
@@ -310,6 +327,9 @@ const posts = [
             
             // 記事ごとのビューカウンターを更新
             updateViewCounter(id);
+            
+            // X Cards / Open Graph メタデータを更新
+            updateMetaTags(id);
             
             // 記事を読み込み
             const contentDiv = document.getElementById('article-content');
@@ -354,6 +374,50 @@ const posts = [
                 // ページごとのユニークなIDを使用
                 const counterId = `techs-targe-blog-${id}`;
                 counterDiv.innerHTML = `<img src="https://komarev.com/ghpvc/?username=${counterId}&label=views&color=000000&style=flat-square" alt="views" />`;
+            }
+        }
+        
+        // X Cards / Open Graph メタデータを更新
+        function updateMetaTags(articleId) {
+            const baseUrl = 'https://techs-targe.github.io/blog';
+            
+            if (articleId && articleId !== 'LIST') {
+                // 記事ページの場合
+                const post = posts.find(p => p.id === articleId);
+                if (post) {
+                    const title = `${post.title} - techs-targe`;
+                    const description = `${post.title}についての記事です。AI時代の技術と人間の統合を探求するブログ。`;
+                    const url = `${baseUrl}/?article=${articleId}`;
+                    const image = `${baseUrl}/images/${articleId}.png`;
+                    
+                    // Twitter Cards
+                    document.getElementById('twitter-title').setAttribute('content', title);
+                    document.getElementById('twitter-description').setAttribute('content', description);
+                    document.getElementById('twitter-image').setAttribute('content', image);
+                    
+                    // Open Graph
+                    document.getElementById('og-title').setAttribute('content', title);
+                    document.getElementById('og-description').setAttribute('content', description);
+                    document.getElementById('og-image').setAttribute('content', image);
+                    document.getElementById('og-url').setAttribute('content', url);
+                }
+            } else {
+                // 記事一覧ページの場合
+                const title = 'techs-targe';
+                const description = 'AI時代の技術と人間の統合を探求するブログ';
+                const url = baseUrl;
+                const image = `${baseUrl}/images/default.png`;
+                
+                // Twitter Cards
+                document.getElementById('twitter-title').setAttribute('content', title);
+                document.getElementById('twitter-description').setAttribute('content', description);
+                document.getElementById('twitter-image').setAttribute('content', image);
+                
+                // Open Graph
+                document.getElementById('og-title').setAttribute('content', title);
+                document.getElementById('og-description').setAttribute('content', description);
+                document.getElementById('og-image').setAttribute('content', image);
+                document.getElementById('og-url').setAttribute('content', url);
             }
         }
         
