@@ -20,16 +20,15 @@ if [ ! -f "$BASE_IMAGE" ]; then
     exit 1
 fi
 
-# 画像にタイトルを追加
+# 画像にタイトルを追加（バナースタイル）
 echo "画像を生成中: $OUTPUT_IMAGE"
 convert "$BASE_IMAGE" \
+    -fill "rgba(0,0,0,0.7)" \
+    -draw "rectangle 0,200 1200,400" \
     -gravity center \
     -font "Noto-Sans-CJK-JP-Bold" \
-    -pointsize 48 \
+    -pointsize 52 \
     -fill white \
-    -stroke black \
-    -strokewidth 2 \
-    -kerning 1 \
     -annotate +0+0 "$TITLE" \
     "$OUTPUT_IMAGE"
 
