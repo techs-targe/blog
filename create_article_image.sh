@@ -24,7 +24,7 @@ fi
 echo "画像を生成中: $OUTPUT_IMAGE"
 convert "$BASE_IMAGE" \
     -gravity center \
-    -font DejaVu-Sans-Bold \
+    -font "Noto-Sans-CJK-JP-Bold" \
     -pointsize 48 \
     -fill white \
     -stroke black \
