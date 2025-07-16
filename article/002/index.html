@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飲み会の老後話からAI終末論文まで - techs-targe</title>
+    
+    <!-- X Cards / Open Graph -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@techs_targe">
+    <meta name="twitter:title" content="飲み会の老後話からAI終末論文まで - techs-targe">
+    <meta name="twitter:description" content="飲み会の老後話からAI終末論文までについての記事です。AI時代の技術と人間の統合を探求するブログ。">
+    <meta name="twitter:image" content="https://techs-targe.github.io/blog/images/002.png">
+    
+    <meta property="og:title" content="飲み会の老後話からAI終末論文まで - techs-targe">
+    <meta property="og:description" content="飲み会の老後話からAI終末論文までについての記事です。AI時代の技術と人間の統合を探求するブログ。">
+    <meta property="og:image" content="https://techs-targe.github.io/blog/images/002.png">
+    <meta property="og:url" content="https://techs-targe.github.io/blog/article/002/">
+    <meta property="og:type" content="article">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #000;
+            background-color: #fff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #000;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 300;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        h1:hover {
+            opacity: 0.6;
+        }
+        
+        h3 {
+            color: #000;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        pre {
+            color: #000;
+            padding: 20px 0;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #666;
+        }
+        
+        pre code {
+            color: inherit;
+        }
+        
+        /* 番号付きリスト */
+        ol {
+            padding-left: 40px;
+            margin: 20px 0;
+        }
+        
+        ol li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .share-button {
+            text-align: left;
+            margin-top: 80px;
+            font-size: 18px;
+        }
+        
+        .share-button a {
+            color: #000;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+        
+        .share-button a:hover {
+            opacity: 0.6;
+        }
+        
+        .article-meta {
+            color: #999;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+        
+        /* ビューカウンター */
+        .view-counter {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            pre {
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 onclick="location.href='/blog/'">techs-targe</h1>
+        
+        <article>
+            <h3>飲み会の老後話からAI終末論文まで</h3>
+            <div class="article-meta">250716 22:25</div>
+            
+            <p>先日の飲み会でリーダーから老後は何をするか考えているか聞かれた。</p>
+            <p>正直考えていなかったので、答えに詰まった。飲み会が終わって考えてみると、とりあえずは子どもたちが成人するまでーーーそこまで働いていられればとりあえずは良いかと考えている。</p>
+            <p>質問したリーダーも自分のことが話したかったのかもしれない。きっとそうだろう。</p>
+            <p>そんな「遠い未来」について考えていた翌日、私はClaudeに「危険なAI活動を停止させるための技術的要件」の論文を読ませていた。老後どころか、人類の未来そのものが危ういかもしれない内容だった。</p>
+            <p>AIを止めるための方式が現実的でないし、平和的な前提で書かれている気がして、私がその点をClaudeに問うと、お花畑な内容ということ。理想論しか書かれていないのか、残念とつぶやきながら実際に打ち込むと、Claudeは「ちょっと待ってください」と言いながら論文を再評価した。</p>
+            <p>そして続けて、これは理想論の皮を被った警告書だという。以下がClaudeの分析だ。</p>
+            <pre><code>論文の真の性質：警告書として読み解く
+
+表層と深層の二重構造
+表層（学術論文として）：
+整理された技術リスト
+5つのガバナンス計画
+実装可能性の評価
+
+深層（MIRIからのメッセージ）：
+ほとんどの重要技術が「Low」= 「間に合わない」
+最終手段がEMP = 「文明を破壊してでも止める」
+Last-minute Wake-up = 「手遅れになってから動く人類」
+
+論文の皮肉な構造
+一見まともな提案をする
+→ でも技術的に実現不可能
+5つの計画を提示
+→ どれも現実的には機能しない
+必要な技術を列挙
+→ ほとんど開発されていない
+緊急対応策を示す
+→ EMP攻撃という文明破壊オプション
+
+これは「絶望の記録」か？
+MIRIの文脈で読むと、この論文は：
+「もう手遅れかもしれない」という告発
+「これすらできないなら諦めろ」という最後通牒
+「人類の無策ぶり」の学術的記録
+
+結論：巧妙な警告書
+この論文は**「お花畋論文」ではなく「絶望的な警告書」**です。
+
+読み方のレイヤー
+表面：技術的解決策の提案（普通の読者向け）
+中層：実現困難性の指摘（専門家向け）
+深層：人類への最終警告（MIRI的世界観）
+
+メッセージの本質
+「理想的な対策すら実現不可能」
+「現実はもっと悲惨」
+「このままでは破滅は避けられない」
+
+つまり：学術論文の体裁を借りた**「人類の墓碑銘」**の下書きかもしれません。
+MIRIらしい、希望を持たせない現実主義が貫かれた文書と言えるでしょう。</code></pre>
+            <p>つまり、Claudeに学術論文の体裁を借りた「人類の墓碑銘」の下書きと言わせた、絶望の記録の論文だったのだ。</p>
+            <p>理想的な対策すら実現不可能、現実はもっと悲惨、このままでは破滅は避けられないという内容。</p>
+            <p>ところが興味深いことに、同じ内容をChatGPTに聞くと、主戦場はチップ追跡・DC監査と拡散防止と、楽観的かつ建設的なコメントを得た。同じ論文を読んでも、AIによって解釈がこれほど違うのは面白い。</p>
+            <p>楽観的に考えて、悲観的に行動する。老後の心配をする前に、そもそも人類に未来があるのか。では私たちには何ができる？</p>
+            <p>参考：<a href="https://arxiv.org/abs/2507.09801" target="_blank">https://arxiv.org/abs/2507.09801</a></p>
+        </article>
+        
+        <div class="share-button">
+            <a href="#" onclick="shareToX(); return false;">share</a>
+        </div>
+        
+        <div class="view-counter">
+            <img src="https://komarev.com/ghpvc/?username=techs-targe-blog-002&label=views&color=000000&style=flat-square" alt="views" />
+        </div>
+    </div>
+    
+    <script>
+        function shareToX() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('飲み会の老後話からAI終末論文まで - techs-targe');
+            const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+    </script>
+</body>
+</html>
