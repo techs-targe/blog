@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6Gとエネルギー - techs-targe</title>
+    
+    <!-- X Cards / Open Graph -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@techs_targe">
+    <meta name="twitter:title" content="6Gとエネルギー - techs-targe">
+    <meta name="twitter:description" content="6Gとエネルギーについての記事です。AI時代の技術と人間の統合を探求するブログ。">
+    <meta name="twitter:image" content="https://techs-targe.github.io/blog/images/003.png">
+    
+    <meta property="og:title" content="6Gとエネルギー - techs-targe">
+    <meta property="og:description" content="6Gとエネルギーについての記事です。AI時代の技術と人間の統合を探求するブログ。">
+    <meta property="og:image" content="https://techs-targe.github.io/blog/images/003.png">
+    <meta property="og:url" content="https://techs-targe.github.io/blog/article/003/">
+    <meta property="og:type" content="article">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #000;
+            background-color: #fff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #000;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 300;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        h1:hover {
+            opacity: 0.6;
+        }
+        
+        h3 {
+            color: #000;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        pre {
+            background-color: #f5f5f5;
+            border-left: 4px solid #333;
+            padding: 20px 20px 20px 30px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #333;
+        }
+        
+        pre code {
+            color: #1a1a1a;
+        }
+        
+        /* 番号付きリスト */
+        ol {
+            padding-left: 40px;
+            margin: 20px 0;
+        }
+        
+        ol li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        ul {
+            padding-left: 40px;
+            margin: 20px 0;
+        }
+        
+        ul li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .share-button {
+            text-align: left;
+            margin-top: 80px;
+            font-size: 18px;
+        }
+        
+        .share-button a {
+            color: #000;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+        
+        .share-button a:hover {
+            opacity: 0.6;
+        }
+        
+        .article-meta {
+            color: #999;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+        
+        /* ビューカウンター */
+        .view-counter {
+            display: none;
+        }
+        
+        /* セクション見出し */
+        h4 {
+            color: #000;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        /* テーブルスタイル */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        
+        table th {
+            background-color: #f5f5f5;
+            font-weight: 500;
+        }
+        
+        table th:nth-child(2), table td:nth-child(2) {
+            text-align: center;
+        }
+        
+        /* 数式スタイル */
+        .math-block {
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.1em;
+        }
+        
+        .math-inline {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            pre {
+                font-size: 12px;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 onclick="location.href='/blog/'">techs-targe</h1>
+        
+        <article>
+            <h3>6Gとエネルギー</h3>
+            <div class="article-meta">250720 10:00</div>
+            
+            <h4>■小さな前置き(研究ログ)</h4>
+            <ul>
+                <li>7月中旬の3連休は選挙、研究システムの作成、子供の学校関連の行事と、なかなか充実していた。</li>
+                <li>いおりんさん(@Ioriiii8)に「論文はMarkdownで落としておくと便利」だと教えてもらったので、Claude Codeに頼んでローカル＋GitHub連携の論文解読ツールを作成。個人のニーズに合わせたツールを即席で用意できるのは本当に嬉しい。</li>
+            </ul>
+
+            <h4>■The Generative Energy Arena</h4>
+            <p>LLMのユーザ評価にエネルギー消費を明示して行動の変化を調べたのがThe Generative Energy Arena (GEA) (<a href="https://arxiv.org/abs/2507.13302" target="_blank">https://arxiv.org/abs/2507.13302</a>)だ。MOOC受講生ら694件の投票ログを分析した結果、回答者の平均46%が、エネルギー情報を提示したあとにより省エネモデルへ票を変更したと報告されている。</p>
+
+            <h4>■DeepRx 論文のブレークイーブン時間の検算</h4>
+            <p>6Gに関して、ITU‑Rは2027 年に候補技術募集、商用化ターゲットは 2030 年ごろとなっていて、6GはNative AIを標準で組みこもうとしている。</p>
+            <p>たまたま関連の論文をサマリしてみていたところ、Energy Efficiency in AI for 5G and Beyond: A DeepRx Case Studyの論文で、記載誤りを見つけた。</p>
+            <p>論文では、「推論を 10 分間続ければ、学習に要したエネルギーを上回る」と述べている。</p>
+            <p>論文に示された（数値は本文と図表から取得）前提は次のとおり。</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>パラメータ</th>
+                        <th>記号</th>
+                        <th>値</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>学習 1 ステップの消費エネルギー</td>
+                        <td><em>E</em><sub>step</sub></td>
+                        <td>20 J</td>
+                    </tr>
+                    <tr>
+                        <td>学習ステップ数</td>
+                        <td><em>N</em><sub>step</sub></td>
+                        <td>2.5×10<sup>5</sup></td>
+                    </tr>
+                    <tr>
+                        <td>推論 1 回の消費エネルギー</td>
+                        <td><em>E</em><sub>inf</sub></td>
+                        <td>0.002 J</td>
+                    </tr>
+                    <tr>
+                        <td>推論レート</td>
+                        <td><em>r</em></td>
+                        <td>400 inferences s<sup>−1</sup></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="math-block">
+                <p><em>E</em><sub>train</sub> = <em>E</em><sub>step</sub> × <em>N</em><sub>step</sub> = 5.0×10<sup>6</sup> J</p>
+                <p><em>t</em><sub>BE</sub> = <em>E</em><sub>train</sub> / (<em>E</em><sub>inf</sub> × <em>r</em>) = 6.25×10<sup>6</sup> s ≈ 72.3 日</p>
+            </div>
+
+            <p>つまり 「10 分」ではなく「約 72 日」 が正しく、論文本文の値は約 10 400 倍 過小となる。</p>
+
+            <h4>■6G "AI‑Native RAN" 論文の省エネ評価範囲</h4>
+            <p>中国移動が公開した "Towards AI‑Native RAN: An Operator's Perspective of 6G Day 1 Standardization" は、31 都市・5 000 局の大規模試験で</p>
+            <p>「AI によって 34.16 % のエネルギー削減」 と報告する。</p>
+            <p>同論文が提示するネットワーク消費電力モデルは</p>
+
+            <div class="math-block">
+                <p><em>E</em> = <em>N</em><sub>BS</sub> × <em>T</em><sub>op</sub> × (<em>P</em><sub>PA</sub> + <em>P</em><sub>TRX</sub> + <em>P</em><sub>DIF</sub> + <em>P</em><sub>BB</sub> + <em>P</em><sub>static</sub>)</p>
+            </div>
+
+            <p>といった <strong>通信系ハードのみ</strong> が内訳で、AI 推論サーバや冷却設備の電力はパラメータに含まれていない（節 V‑E の説明より判読）。したがって「34 % 削減」は<strong>通信部分の省エネ</strong>を示した値であり、<em>AI 処理そのものが増やす電力</em> を加味した<strong>システム全体のエネルギー収支</strong>は未提示である。</p>
+
+            <h4>■考察と懸念</h4>
+            <p>6Gの標準化は2027年にITU 募集予定だ。もし通信部だけの部分最適データが先行採用されれば、実際にはエネルギー総和が増えるリスクがある。総エネルギー収支を必須項目として開示し、第三者検証する仕組みが必要。エネルギー評価に欠陥があるまま仕様策定が進んでいないか懸念している。</p>
+        </article>
+        
+        <div class="share-button">
+            <a href="#" onclick="shareToX(); return false;">share</a>
+        </div>
+        
+        <div class="view-counter">
+            <img src="https://komarev.com/ghpvc/?username=techs-targe-blog-003&label=views&color=000000&style=flat-square" alt="views" />
+        </div>
+    </div>
+    
+    <script>
+        function shareToX() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('6Gとエネルギー - techs-targe');
+            const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+    </script>
+</body>
+</html>
