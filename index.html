@@ -143,6 +143,9 @@ const posts = [
     
     <script>
         function init() {
+            console.log('init() called');
+            console.log('posts:', posts);
+            
             // URLパラメータから記事IDを取得（旧URL対応）
             const urlParams = new URLSearchParams(window.location.search);
             const articleId = urlParams.get('article');
@@ -155,7 +158,15 @@ const posts = [
             
             // 記事リストを生成
             const listContainer = document.getElementById('article-list');
+            console.log('listContainer:', listContainer);
+            
+            if (!listContainer) {
+                console.error('article-list element not found!');
+                return;
+            }
+            
             posts.forEach(post => {
+                console.log('Creating item for post:', post);
                 const item = document.createElement('div');
                 item.className = 'article-list-item';
                 item.onclick = () => {
@@ -167,6 +178,8 @@ const posts = [
                 `;
                 listContainer.appendChild(item);
             });
+            
+            console.log('Articles added to list');
         }
         
         window.onload = init;
