@@ -211,7 +211,7 @@
             <ul>
                 <li><strong>リージョン</strong>：us-west-2（オレゴン）</li>
                 <li><strong>ストレージ</strong>：S3（KB用フォルダ構成）</li>
-                <li><strong>知識ベース</strong>：Bedrock Knowledge Bases + Amazon Titan Embeddings</li>
+                <li><strong>知識ベース</strong>：Bedrock Knowledge Bases + Amazon Titan Embeddings（正直AI任せだった）</li>
                 <li><strong>推論モデル</strong>：Claude / Titan Text（用途別に使い分け）</li>
                 <li><strong>評価エンジン</strong>：LangGraphでマルチエージェントを分岐実行</li>
                 <li><strong>結果保存</strong>：DynamoDB（agent_runs / match_results）※結局POCでは使わず</li>
@@ -283,6 +283,8 @@ aws s3 sync kb_out/ s3://talent-match-poc-2025/kb/</code></pre>
 RAGによる職務固有化で、チーム要件変更に学習なしで追従可能。</p>
 
             <p>これ、GPT-5が出たらサポートしてもらえればいけるかな？と思っていたが、今回のPoCは論文の設計思想をAWSスタックでほぼ再現できた。サーバレスでできたのが嬉しい。</p>
+
+            <p>構築できたけど理解は深くないので、基礎的な追いかけを怠らないようにする。</p>
 
             <h4>■蛇足</h4>
             <p>話はそれるけど、この前ぬこぬこさん（<a href="https://x.com/schroneko" target="_blank">@schroneko</a>）主催のClaude MAX会に参加させてもらったが、普通にみんな論文読んでるのよね。私は教育・セキュリティ・アライメント系の論文を日課でLLMで解析して読んでいるが、あまり論文を読む人はいないと思っていた。完全な思い上がりだった。</p>
