@@ -238,7 +238,7 @@
                 <li>モデルは <code>anthropic.claude-haiku-4-5-20251001-v1:0</code> を使う。<br>
                 ※このモデルは料金ページに料金が載っていなかった</li>
                 <li>CloudShellを開く。</li>
-                <li>公式のサンプルスクリプトを実行する。<br>
+                <li>公式のサンプルスクリプトを実行する。参考ページは以下。<br>
                 <a href="https://github.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation" target="_blank">https://github.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation</a></li>
             </ul>
 
@@ -286,7 +286,7 @@ Saving to: 'STDOUT'
 
             <p>（３）ユーザー作成</p>
 
-            <pre><code># 1) 管理者がユーザー作成（username と email を一致）
+            <pre><code># 1) 管理者ユーザー作成
 aws cognito-idp admin-create-user \
   --user-pool-id "$POOL_ID" \
   --username "$EMAIL" \
@@ -294,7 +294,7 @@ aws cognito-idp admin-create-user \
   --message-action SUPPRESS \
   --user-attributes Name=email,Value="$EMAIL" Name=email_verified,Value=true
 
-# 2) 一時PWを恒久パスワードに変更（任意）
+# 2) 一時PWを恒久パスワードに変更
 aws cognito-idp admin-set-user-password \
   --user-pool-id "$POOL_ID" \
   --username "$EMAIL" \
