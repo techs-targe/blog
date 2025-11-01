@@ -284,7 +284,28 @@ Saving to: 'STDOUT'
 
             <hr>
 
-            <p>（３）ユーザー作成</p>
+            <p>（３）環境変数の設定</p>
+
+            <pre><code>EMAIL="your_mail@your_domain"
+
+# User Pool ID（OutputKeyに "UserPoolId" を含むもの）
+POOL_ID=$(aws cloudformation describe-stacks \
+  --region us-west-2 --stack-name RapidStack \
+  --query "Stacks[0].Outputs[?contains(OutputKey, 'UserPoolId')].OutputValue" \
+  --output text)
+echo "POOL_ID=$POOL_ID"
+
+# User Pool Client ID（"ClientId" を含むもの）
+CLIENT_ID=$(aws cloudformation describe-stacks \
+  --region us-west-2 --stack-name RapidStack \
+  --query "Stacks[0].Outputs[?contains(OutputKey, 'ClientId')].OutputValue" \
+  --output text)
+echo "CLIENT_ID=$CLIENT_ID"
+
+# （このセッションだけ us-west-2 を既定にしたいなら）
+export AWS_DEFAULT_REGION=us-west-2</code></pre>
+
+            <p>（４）ユーザー作成</p>
 
             <pre><code># 1) 管理者ユーザー作成
 aws cognito-idp admin-create-user \
@@ -301,7 +322,7 @@ aws cognito-idp admin-set-user-password \
   --password '&lt;PERMANENT_PASSWORD&gt;' \
   --permanent</code></pre>
 
-            <p>（４）ログイン<br>
+            <p>（５）ログイン<br>
             デプロイ成功時に出力される Frontend URL に接続し、ログイン画面からログイン成功。</p>
             <img src="2_login_success.png" alt="ログイン成功">
 
@@ -310,7 +331,7 @@ aws cognito-idp admin-set-user-password \
 
             <hr>
 
-            <p>（５）問題発生、そして次回へ<br>
+            <p>（６）問題発生、そして次回へ<br>
             チェックリストのチェックが終わらない。</p>
             <img src="7_problem.png" alt="問題発生">
 
