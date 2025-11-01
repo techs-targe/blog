@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編） - techs-targe</title>
+
+    <!-- X Cards / Open Graph -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@techs_targe">
+    <meta name="twitter:title" content="AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編） - techs-targe">
+    <meta name="twitter:description" content="AWS RAPIDを使った書類審査自動化の実践。Bedrockとクラウド環境でのセットアップ手順を解説。">
+    <meta name="twitter:image" content="https://techs-targe.github.io/blog/images/005.png">
+
+    <meta property="og:title" content="AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編） - techs-targe">
+    <meta property="og:description" content="AWS RAPIDを使った書類審査自動化の実践。Bedrockとクラウド環境でのセットアップ手順を解説。">
+    <meta property="og:image" content="https://techs-targe.github.io/blog/images/005.png">
+    <meta property="og:url" content="https://techs-targe.github.io/blog/article/005/">
+    <meta property="og:type" content="article">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #000;
+            background-color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #000;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 300;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        h1:hover {
+            opacity: 0.6;
+        }
+
+        h2 {
+            color: #000;
+            margin: 40px 0 20px 0;
+            font-weight: 400;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #000;
+            margin: 30px 0 15px 0;
+            font-weight: 400;
+            font-size: 1.4em;
+        }
+
+        h4 {
+            color: #000;
+            margin: 20px 0 10px 0;
+            font-weight: 400;
+            font-size: 1.2em;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        pre {
+            background-color: #f5f5f5;
+            border-left: 4px solid #333;
+            padding: 20px 20px 20px 30px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        pre code {
+            color: #1a1a1a;
+            background-color: transparent;
+            padding: 0;
+        }
+
+        ul {
+            padding-left: 40px;
+            margin: 20px 0;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            display: block;
+        }
+
+        .share-button {
+            text-align: left;
+            margin-top: 80px;
+            font-size: 18px;
+        }
+
+        .share-button a {
+            color: #000;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .share-button a:hover {
+            opacity: 0.6;
+        }
+
+        .article-meta {
+            color: #999;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+
+        .view-counter {
+            display: none;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            h3 {
+                font-size: 1.2em;
+            }
+
+            pre {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 onclick="location.href='/blog/'">techs-targe</h1>
+
+        <article>
+            <h3>AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編）</h3>
+            <div class="article-meta">251102 04:00</div>
+
+            <h2>■RAPIDとは</h2>
+
+            <p>RAPID = Review & Assessment Powered by Intelligent Documentation<br>
+            AIによる書類審査ソリューション。</p>
+
+            <p>最新の生成AIを活用して、書類審査の効率化をサポートするソリューション。</p>
+
+            <p>行政機関向けの申請書などのチェックに使えるか？</p>
+
+            <p>参考URL<br>
+            <a href="https://pages.awscloud.com/rs/112-TZM-766/images/AWS_Summit_2025_I-23A_Review-and-assessment-powered-by-intelligent-documentation_RAPID.pdf" target="_blank">https://pages.awscloud.com/rs/112-TZM-766/images/AWS_Summit_2025_I-23A_Review-and-assessment-powered-by-intelligent-documentation_RAPID.pdf</a></p>
+
+            <p>公式PDFのアーキテクチャはこんなイメージ。</p>
+            <img src="1_arch.png" alt="RAPIDアーキテクチャ">
+
+            <hr>
+
+            <h2>■やってみる</h2>
+
+            <h3>用意する資料</h3>
+
+            <p>（１）要求仕様書のサンプル<br>
+            <a href="https://www.sessame.jp/workinggroup/WorkingGroup2/POT_Specification_v7.PDF" target="_blank">https://www.sessame.jp/workinggroup/WorkingGroup2/POT_Specification_v7.PDF</a></p>
+
+            <p>（２）サービスセットアップ</p>
+
+            <ul>
+                <li>AWS Management ConsoleでBedrockを有効化しておく。</li>
+                <li>リージョンは <strong>us-west-2</strong> を使用。</li>
+                <li>モデルは <code>anthropic.claude-haiku-4-5-20251001-v1:0</code> を使う。<br>
+                あれ、このモデルは料金ページに料金が載っていないのかな？</li>
+                <li>CloudShellを開く。</li>
+                <li>公式のサンプルスクリプトを実行する。<br>
+                <a href="https://github.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation" target="_blank">https://github.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation</a></li>
+            </ul>
+
+            <pre><code># IPを自分の環境に合わせて設定
+# IP4="$(curl -4 -s ifconfig.me)/32"
+IP4="&lt;YOUR_PUBLIC_IP/32&gt;"  # 例: 203.0.113.10/32 など
+
+wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh \
+| bash -s -- \
+  --ipv4-ranges "[\"$IP4\"]" \
+  --cognito-self-signup false \
+  --auto-migrate false \
+  --bedrock-region us-west-2 \
+  --document-model "us.anthropic.claude-haiku-4-5-20251001-v1:0" \
+  --image-model "us.anthropic.claude-haiku-4-5-20251001-v1:0"</code></pre>
+
+            <hr>
+
+            <h2>■結果（CloudShellの実行ログ抜粋）</h2>
+
+            <pre><code>~ $ IP4="&lt;YOUR_PUBLIC_IP/32&gt;"
+~ $
+~ $ wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh \
+&gt; | bash -s -- \
+&gt;   --ipv4-ranges "[\"$IP4\"]" \
+&gt;   --cognito-self-signup false \
+&gt;   --auto-migrate false \
+&gt;   --bedrock-region us-west-2 \
+&gt;   --document-model "us.anthropic.claude-haiku-4-5-20251001-v1:0" \
+&gt;   --image-model "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+--2025-11-01 18:04:46--  https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... &lt;omitted&gt;
+Connecting to raw.githubusercontent.com ... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 7687 (7.5K) [text/plain]
+Saving to: 'STDOUT'
+...
+---------------------------------------------------------------------------
+  🎉 Deployment completed successfully!
+---------------------------------------------------------------------------
+  Frontend URL: &lt;https://xxxxxxxxxxxxxxxx.cloudfront.net&gt;
+---------------------------------------------------------------------------</code></pre>
+
+            <hr>
+
+            <p>（３）ユーザー作成</p>
+
+            <pre><code># 1) 管理者がユーザー作成（username と email を一致）
+aws cognito-idp admin-create-user \
+  --user-pool-id "$POOL_ID" \
+  --username "$EMAIL" \
+  --temporary-password '&lt;TEMP_PASSWORD&gt;' \
+  --message-action SUPPRESS \
+  --user-attributes Name=email,Value="$EMAIL" Name=email_verified,Value=true
+
+# 2) 一時PWを恒久パスワードに変更（任意）
+aws cognito-idp admin-set-user-password \
+  --user-pool-id "$POOL_ID" \
+  --username "$EMAIL" \
+  --password '&lt;PERMANENT_PASSWORD&gt;' \
+  --permanent</code></pre>
+
+            <p>（４）ログイン<br>
+            デプロイ成功時に出力される Frontend URL に接続し、ログイン画面からログイン成功。</p>
+            <img src="2_login_success.png" alt="ログイン成功">
+
+            <p>チェックリストを新規作成</p>
+            <img src="3_create_checklist.png" alt="チェックリストを新規作成">
+
+            <hr>
+
+            <p>（５）次回<br>
+            チェックリストのチェックが終わらない。</p>
+            <img src="7_problem.png" alt="問題発生">
+
+            <p>待っていれば終わるのか？</p>
+
+            <p>LLMに任せるチェックだけではなく、数値計算など厳密なチェックは<br>
+            Lambdaで行えばいいのかな。そのあたりまで検証したい。</p>
+        </article>
+
+        <div class="share-button">
+            <a href="#" onclick="shareToX(); return false;">share</a>
+        </div>
+
+        <div class="view-counter">
+            <img src="https://komarev.com/ghpvc/?username=techs-targe-blog-005&label=views&color=000000&style=flat-square" alt="views" />
+        </div>
+    </div>
+
+    <script>
+        function shareToX() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編） - techs-targe');
+            const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+    </script>
+</body>
+</html>
