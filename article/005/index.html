@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編） - techs-targe</title>
+    <title>AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編・追記） - techs-targe</title>
 
     <!-- X Cards / Open Graph -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@techs_targe">
-    <meta name="twitter:title" content="AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編） - techs-targe">
+    <meta name="twitter:title" content="AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編・追記） - techs-targe">
     <meta name="twitter:description" content="AWS RAPIDを使った書類審査自動化の実践。Bedrockとクラウド環境でのセットアップ手順を解説。">
     <meta name="twitter:image" content="https://techs-targe.github.io/blog/images/005-2.png?v=2">
 
-    <meta property="og:title" content="AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編） - techs-targe">
+    <meta property="og:title" content="AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編・追記） - techs-targe">
     <meta property="og:description" content="AWS RAPIDを使った書類審査自動化の実践。Bedrockとクラウド環境でのセットアップ手順を解説。">
     <meta property="og:image" content="https://techs-targe.github.io/blog/images/005-2.png?v=2">
     <meta property="og:url" content="https://techs-targe.github.io/blog/article/005/">
@@ -194,8 +194,8 @@
         <h1 onclick="location.href='/blog/'">techs-targe</h1>
 
         <article>
-            <h3>AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編）</h3>
-            <div class="article-meta">251102 04:00</div>
+            <h3>AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編・追記）</h3>
+            <div class="article-meta">251102 04:00（11/2 13:11追記）</div>
 
             <h4>■RAPIDとは</h4>
 
@@ -317,6 +317,107 @@ aws cognito-idp admin-set-user-password \
 
             <p>LLMに任せるチェックだけではなく、数値計算など厳密なチェックは<br>
             Lambdaで行えばいいのかな？AIとそれ以外の連携を行って審査するところまで検証したい。</p>
+
+            <h4>■11/2 13:11 追記</h4>
+
+            <p>半日立ってもチェックリストのチェックが終わらないため、Step Functionsで状況確認。<br>
+            どうやら、デプロイ時のモデル指定に問題があったようだ。</p>
+
+            <pre><code>--document-model "us.anthropic.claude-haiku-4-5-20251001-v1:0" \
+--image-model "us.anthropic.claude-haiku-4-5-20251001-v1:0"</code></pre>
+
+            <p>モデル指定をなくした場合、Claude Sonnet 4 (2025-05-14)が使われるようだ。<br>
+            デフォルトのモデル指定でリトライしてみる。</p>
+
+            <h4>■再実行結果</h4>
+
+            <pre><code>~ $ IP4="&lt;YOUR_PUBLIC_IP/32&gt;" #実際のIPに合わせて変更する
+~ $
+~ $ wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh \
+&gt; | bash -s -- \
+&gt;   --ipv4-ranges "[\"$IP4\"]" \
+&gt;   --cognito-self-signup false \
+&gt;   --auto-migrate false \
+&gt;   --bedrock-region us-west-2
+--2025-11-02 03:17:00--  https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.110.133, 185.199.109.133, 185.199.108.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.110.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 7687 (7.5K) [text/plain]
+Saving to: 'STDOUT'
+
+-                                                 100%[==========================================================================================================>]   7.51K  --.-KB/s    in 0s
+
+2025-11-02 03:17:00 (64.9 MB/s) - written to stdout [7687/7687]
+
+
+===========================================================================
+    ____  ___    ____  ________
+   / __ \/   |  / __ \/  _/ __ \
+  / /_/ / /| | / /_/ // // / / /
+ / _, _/ ___ |/ ____// // /_/ /
+/_/ |_/_/  |_/_/   /___/_____/
+
+Review & Assessment Powered by Intelligent Documentation
+---------------------------------------------------------------------------
+  This script deploys the RAPID application using AWS CodeBuild.
+  No local environment dependencies - deployment runs entirely in AWS.
+
+  ⚠️  WARNING: Auto-migration is enabled by default.
+     For production environments, consider using --auto-migrate=false
+===========================================================================
+
+Cloning repository...
+Cloning into 'rapid-deploy-1762053420'...
+remote: Enumerating objects: 6547, done.
+remote: Counting objects: 100% (168/168), done.
+remote: Compressing objects: 100% (131/131), done.
+remote: Total 6547 (delta 49), reused 61 (delta 30), pack-reused 6379 (from 2)
+Receiving objects: 100% (6547/6547), 15.42 MiB | 28.25 MiB/s, done.
+Resolving deltas: 100% (3535/3535), done.
+Moved to working directory: /home/cloudshell-user/rapid-deploy-1762053420
+
+Waiting for changeset to be created..
+Waiting for stack create/update to complete
+Successfully created/updated stack - RapidCodeBuildDeploy
+Waiting for stack creation to complete...
+Note: This stack includes a CodeBuild project used for CDK deployment.
+
+Completed.
+
+Starting CodeBuild project: &lt;PROJECT_ID&gt;...
+Waiting for CodeBuild project to complete...
+CodeBuild project completed. Status: SUCCEEDED
+Retrieving CDK deployment logs...
+Cleaning up working directory: rapid-deploy-1762053420
+
+===========================================================================
+  🎉 Deployment completed successfully!
+---------------------------------------------------------------------------
+  Frontend URL: https://xxxxxxxxxxxxxxxx.cloudfront.net
+
+  You can check detailed logs with the following command:
+  aws logs get-log-events --log-group-name /aws/codebuild/&lt;PROJECT_ID&gt; --log-stream-name &lt;LOG_STREAM_NAME&gt;
+===========================================================================
+~ $</code></pre>
+
+            <p>このファイル（POT_v7_checklist_from_csv.pdf）を読ませて、再度チェックリスト作成...成功！</p>
+            <img src="10_again.png" alt="チェックリスト作成成功">
+
+            <p>完成したチェックリストを見ると、一部項目について要修正のマークが付いている。<br>
+            提案の内容に合わせて修正してゆく。</p>
+            <img src="11_modify.png" alt="チェックリストの修正">
+
+            <p>審査データを作成。結果を待つ。</p>
+            <img src="101_make.png" alt="審査データ作成">
+
+            <p>10分ほどで完了。</p>
+            <img src="12_result.png" alt="審査結果">
+
+            <p>一部項目が不合格になったが、大体の項目は合格になった。<br>
+            1ドキュメントで3.67$は結構高いと思うが、人件費に比べれば安いのか？</p>
+
+            <p>よし、あとは独自の検証ロジックのワークフローを継ぎ足して行こうと思う。</p>
         </article>
 
         <div class="share-button">
@@ -331,7 +432,7 @@ aws cognito-idp admin-set-user-password \
     <script>
         function shareToX() {
             const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent('AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編） - techs-targe');
+            const text = encodeURIComponent('AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編・追記） - techs-targe');
             const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
         }
