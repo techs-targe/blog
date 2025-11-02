@@ -53,25 +53,10 @@
             opacity: 0.6;
         }
 
-        h2 {
-            color: #000;
-            margin: 40px 0 20px 0;
-            font-weight: 400;
-            font-size: 1.8em;
-        }
-
         h3 {
             color: #000;
-            margin: 30px 0 15px 0;
+            margin-bottom: 10px;
             font-weight: 400;
-            font-size: 1.4em;
-        }
-
-        h4 {
-            color: #000;
-            margin: 20px 0 10px 0;
-            font-weight: 400;
-            font-size: 1.2em;
         }
 
         p {
@@ -93,15 +78,6 @@
         code {
             font-family: 'Courier New', Courier, monospace;
             color: #333;
-            background-color: #f5f5f5;
-            padding: 2px 6px;
-            border-radius: 3px;
-        }
-
-        pre code {
-            color: #1a1a1a;
-            background-color: transparent;
-            padding: 0;
         }
 
         ul {
@@ -114,20 +90,40 @@
             color: #333;
         }
 
-        a {
-            color: #0066cc;
-            text-decoration: none;
+        h4 {
+            color: #000;
+            margin: 25px 0 15px 0;
+            font-weight: 500;
+            font-size: 1.1em;
         }
 
-        a:hover {
+        strong {
+            color: #000;
+            font-weight: 600;
+        }
+
+        a {
+            color: #000;
             text-decoration: underline;
         }
 
-        img {
-            max-width: 100%;
-            height: auto;
+        a:hover {
+            opacity: 0.6;
+        }
+
+        pre code {
+            color: #1a1a1a;
+        }
+
+        /* 番号付きリスト */
+        ol {
+            padding-left: 40px;
             margin: 20px 0;
-            display: block;
+        }
+
+        ol li {
+            margin-bottom: 8px;
+            color: #333;
         }
 
         .share-button {
@@ -152,14 +148,9 @@
             margin-bottom: 30px;
         }
 
+        /* ビューカウンター */
         .view-counter {
             display: none;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #ddd;
-            margin: 30px 0;
         }
 
         @media (max-width: 768px) {
@@ -173,14 +164,6 @@
 
             h1 {
                 font-size: 2em;
-            }
-
-            h2 {
-                font-size: 1.5em;
-            }
-
-            h3 {
-                font-size: 1.2em;
             }
 
             pre {
@@ -207,7 +190,7 @@
             <h3>AWSのRAPIDを使って書類審査を自動化するトライ（セットアップ編）</h3>
             <div class="article-meta">251102 04:00</div>
 
-            <h2>■RAPIDとは</h2>
+            <h4>■RAPIDとは</h4>
 
             <p>RAPID = Review & Assessment Powered by Intelligent Documentation<br>
             AIを活用して、書類審査の効率化をサポートするソリューション。</p>
@@ -220,14 +203,10 @@
             <p>公式PDFのアーキテクチャはこんなイメージ。業務で使えるかもしれない。早速検証。</p>
             <img src="1_arch.png" alt="RAPIDアーキテクチャ">
 
-            <hr>
-
-            <h2>■やってみる</h2>
-
-            <h3>用意する資料</h3>
+            <h4>■やってみる</h4>
 
             <p>（１）要求仕様書のサンプル<br>
-            <p>今回はこの要求仕様書の書類チェックをやってみる。</p>                                
+            今回はこの要求仕様書の書類チェックをやってみる。<br>
             <a href="https://www.sessame.jp/workinggroup/WorkingGroup2/POT_Specification_v7.PDF" target="_blank">https://www.sessame.jp/workinggroup/WorkingGroup2/POT_Specification_v7.PDF</a></p>
 
             <p>（２）サービスセットアップ</p>
@@ -255,10 +234,6 @@ wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-po
   --document-model "us.anthropic.claude-haiku-4-5-20251001-v1:0" \
   --image-model "us.anthropic.claude-haiku-4-5-20251001-v1:0"</code></pre>
 
-            <hr>
-
-            <h2>■結果（CloudShellの実行ログ抜粋）</h2>
-
             <pre><code>~ $ IP4="&lt;YOUR_PUBLIC_IP/32&gt;"
 ~ $
 ~ $ wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh \
@@ -281,8 +256,6 @@ Saving to: 'STDOUT'
 ---------------------------------------------------------------------------
   Frontend URL: &lt;https://xxxxxxxxxxxxxxxx.cloudfront.net&gt;
 ---------------------------------------------------------------------------</code></pre>
-
-            <hr>
 
             <p>（３）環境変数の設定</p>
 
@@ -328,8 +301,6 @@ aws cognito-idp admin-set-user-password \
 
             <p>チェックリストを新規作成</p>
             <img src="3_create_checklist.png" alt="チェックリストを新規作成">
-
-            <hr>
 
             <p>（６）問題発生、そして次回へ<br>
             チェックリストのチェックが終わらない。</p>
