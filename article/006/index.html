@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWSで様々なチェック処理を効率化するシステムを構築する（1） - techs-targe</title>
+
+    <!-- X Cards / Open Graph -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@techs_targe">
+    <meta name="twitter:title" content="AWSで様々なチェック処理を効率化するシステムを構築する（1） - techs-targe">
+    <meta name="twitter:description" content="CloudFront、S3、Cognitoを使った書類チェックシステムのAWS構築記録。ビルドログを通じて学ぶ実践的な構築手順。">
+    <meta name="twitter:image" content="https://techs-targe.github.io/blog/images/006.png">
+
+    <meta property="og:title" content="AWSで様々なチェック処理を効率化するシステムを構築する（1） - techs-targe">
+    <meta property="og:description" content="CloudFront、S3、Cognitoを使った書類チェックシステムのAWS構築記録。ビルドログを通じて学ぶ実践的な構築手順。">
+    <meta property="og:image" content="https://techs-targe.github.io/blog/images/006.png">
+    <meta property="og:url" content="https://techs-targe.github.io/blog/article/006/">
+    <meta property="og:type" content="article">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #000;
+            background-color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #000;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 300;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        h1:hover {
+            opacity: 0.6;
+        }
+
+        h3 {
+            color: #000;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        pre {
+            background-color: #f5f5f5;
+            border-left: 4px solid #333;
+            padding: 20px 20px 20px 30px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #333;
+        }
+
+        ul {
+            padding-left: 40px;
+            margin: 20px 0;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        h4 {
+            color: #000;
+            margin: 25px 0 15px 0;
+            font-weight: 500;
+            font-size: 1.1em;
+        }
+
+        strong {
+            color: #000;
+            font-weight: 600;
+        }
+
+        a {
+            color: #000;
+            text-decoration: underline;
+        }
+
+        a:hover {
+            opacity: 0.6;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            display: block;
+        }
+
+        pre code {
+            color: #1a1a1a;
+        }
+
+        /* 番号付きリスト */
+        ol {
+            padding-left: 40px;
+            margin: 20px 0;
+        }
+
+        ol li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .share-button {
+            text-align: left;
+            margin-top: 80px;
+            font-size: 18px;
+        }
+
+        .share-button a {
+            color: #000;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .share-button a:hover {
+            opacity: 0.6;
+        }
+
+        .article-meta {
+            color: #999;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+
+        /* ビューカウンター */
+        .view-counter {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            pre {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 onclick="location.href='/blog/'">techs-targe</h1>
+
+        <article>
+            <h3>AWSで様々なチェック処理を効率化するシステムを構築する（1）</h3>
+            <div class="article-meta">251117 01:00</div>
+
+            <p>某日、業務において書類のチェック処理が課題になっていたので、<br>
+            頭の整理も兼ねて、AWSで組んでみることにした。</p>
+
+            <p>ここで作ろうとしているのは社内ブログ記事のチェックシステムだ。<br>
+            社内ブログ記事に限定して構築するが、汎化すれば様々なチェック処理に活用できるので、あくまでもプロトタイプ的な位置づけとなる。</p>
+
+            <p>構成は以下のようなものとなる。</p>
+
+            <h4>■構成図</h4>
+            <img src="archi.png" alt="システム構成図">
+
+            <ul>
+                <li>実際は業務部門のユーザーが利用する。</li>
+                <li>ブログ記事のチェックロジックは色々あるが、プログラムチェックとAIチェックを組み合わせる。</li>
+                <li>ユーザーはAIと対話することでチェックロジックを作成・変更できる。</li>
+                <li>チェックロジックはプラグインとしてシステムに組み込まれる。</li>
+                <li>DBを用意し、チェックロジックからDBサービス経由でアクセスする。</li>
+                <li>DBは高くなるので今回はスタブにする可能性あり。</li>
+            </ul>
+
+            <p>前置きが長くなったが、上記システムの制作の軌跡を備忘として残していきたいと思う。</p>
+
+            <h4>■AWSサービス選定にあたって</h4>
+
+            <p>私はAWS Builderとして体系的な学習をしたわけではない。<br>
+            サービス選定はGPT-5.1に相談して決めている。だから、もしかしたらAWSのセオリーから外れている点もあるかもしれない。<br>
+            いったん作ってみて、AWSの諸先輩方に教えを請いたいと思っている。</p>
+
+            <p><strong>AI Builders Dayで聞いてみよう！</strong></p>
+
+            <h4>■(1) フロント／ユーザー認証</h4>
+
+            <p><strong>CloudFront + S3 + Cognito</strong></p>
+
+            <p>メモ：CloudFrontは外部アクセスの入口、S3はオブジェクトストレージ、Cognitoはユーザー管理のマネージドサービス。</p>
+
+            <p>まずCloudFrontの設定から。</p>
+
+            <p>GPT-5.1にビルドログのキャンバスを作るように指示し、CloudFrontの作成手順を問う。</p>
+
+            <p>ユーザー管理はCognitoでやれば良いのね。<br>
+            AWSはマネージドサービスが手厚い感がある。</p>
+
+            <p>ついでにGitHubのCIパイプラインも学習しておこう。<br>
+            GitからCIでデプロイできるように。</p>
+
+            <h4>■メモ：Gitのmasterブランチがmainブランチになった理由</h4>
+
+            <p>もともとGitのデフォルトはmasterだったけど、近年、「master/slave」という言葉が人種差別・奴隷制を連想させる、という問題意識が強まり、その流れの中で、より中立的なmainに変えていこうという動きが起きた、という歴史がある。</p>
+
+            <p>リポジトリを作成し、自動デプロイにチャレンジ。</p>
+
+            <p>以下、GPT-5.1と作成したビルドログ（手順メモ）。</p>
+
+            <h4>■ブログ記事チェックエンジン ビルドログ</h4>
+
+            <p>このドキュメントは、AWS 上にブログ記事チェックエンジンを構築する際の作業ログです。</p>
+
+            <h4>0. 前提情報</h4>
+
+            <ul>
+                <li>リージョン: us-west-2 オレゴン</li>
+                <li>システム名: ブログ記事チェックエンジン PoC</li>
+            </ul>
+
+            <h4>1. CloudFront の設定</h4>
+
+            <p><strong>1-0. 事前確認</strong></p>
+
+            <p><strong>1-1. CloudFront ディストリビューション新規作成 Step1 Get started</strong></p>
+
+            <ol>
+                <li>CloudFront コンソールを開き、左メニューの <strong>Distributions</strong> から <strong>Create distribution</strong> をクリック</li>
+                <li>"Get started" 画面で次を設定
+                    <ul>
+                        <li>Distribution name: <code>blog-checker-web-dist</code> など任意のわかりやすい名前</li>
+                        <li>これはタグ的な名前であり、URL には影響しない</li>
+                        <li>Description: 空のままでよい（必要なら後で追記）</li>
+                        <li>Distribution type: <strong>Single website or app</strong> を選択</li>
+                        <li>Domain: 今は空のまま（Route 53 の独自ドメインを後で使う場合に設定）</li>
+                        <li>Tags: 任意。必要であれば <code>Project = blog-checker-web</code> などを追加</li>
+                    </ul>
+                </li>
+                <li>右下の <strong>Next</strong> をクリックし Step2 Specify origin へ進む</li>
+            </ol>
+
+            <p><strong>1-2. CloudFront ディストリビューション新規作成 Step2 以降</strong></p>
+
+            <ol>
+                <li>Step2 Specify origin
+                    <ul>
+                        <li>Origin type: Web を選択</li>
+                        <li>Origin domain: S3 バケット <code>blog-checker-web-XXXX</code>（例：<code>blog-checker-web-example</code>）をプルダウンから選択</li>
+                        <li>例：<code>example-bucket.s3.us-west-2.amazonaws.com</code></li>
+                        <li>「この S3 バケットは S3 Web サイトで設定されています。このディストリビューションを Web サイトとして使用する予定の場合は、バケットエンドポイントではなく S3 ウェブサイトエンドポイントを使用することをお勧めします。」と表示されても、特に変更しない</li>
+                        <li>その他はデフォルトのまま Next へ</li>
+                    </ul>
+                </li>
+                <li>Step3 Enable security
+                    <ul>
+                        <li>このステップでは CloudFront に AWS WAF Web Application Firewall を紐付けるかを選択する</li>
+                        <li>ブログ記事チェックエンジン PoC ではまずコストと設定をシンプルにするため、<strong>セキュリティ保護を有効にしないでください</strong> を選択する</li>
+                        <li>「既存の WAF 設定を使う」「新しい WAF を作成する」は使用しない</li>
+                        <li>Use monitor mode もオフのままにする</li>
+                        <li>後から必要になった時点で WAF を追加で関連付けることができる</li>
+                        <li>画面右下の <strong>Next</strong> をクリックし Step4 Configure distributions へ進む</li>
+                    </ul>
+                </li>
+                <li>Step4 Configure distributions
+                    <ul>
+                        <li>Default cache behavior 内で次を設定</li>
+                        <li>Viewer protocol policy: <strong>Redirect HTTP to HTTPS</strong> を選択</li>
+                        <li>Allowed HTTP methods: <code>GET, HEAD</code> を選択（当面はこれで十分）</li>
+                        <li>Cache policy: <code>Managed-CachingOptimized</code> を選択</li>
+                        <li>Compress objects automatically: 有効のまま</li>
+                        <li>他の設定はデフォルトのまま Next</li>
+                    </ul>
+                </li>
+                <li>Step5 Get TLS certificate
+                    <ul>
+                        <li>一旦は "Use the default CloudFront certificate" を選択</li>
+                        <li>独自ドメインを使う場合は後日 ACM 証明書を設定する</li>
+                        <li>Next で最終確認画面へ</li>
+                    </ul>
+                </li>
+                <li>Step6 Review and create
+                    <ul>
+                        <li>設定内容を確認し、問題なければ <strong>Create distribution</strong> をクリック</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <p><strong>1-3. ディストリビューション設定とデフォルトキャッシュビヘイビア</strong></p>
+
+            <ol>
+                <li><strong>Default cache behavior</strong> セクションで
+                    <ul>
+                        <li>Viewer protocol policy: <strong>Redirect HTTP to HTTPS</strong> を選択</li>
+                        <li>Allowed HTTP methods: <code>GET, HEAD</code> を選択（当面はこれで十分）</li>
+                        <li>Cache policy: <code>Managed-CachingOptimized</code> を選択</li>
+                        <li>Compress objects automatically: 有効のまま</li>
+                    </ul>
+                </li>
+                <li>他の設定はデフォルトのままとし、細かいチューニングは後日検討</li>
+            </ol>
+
+            <p><strong>1-4. ドメインと証明書まわり</strong></p>
+
+            <ul>
+                <li>一旦は CloudFront が自動で発行するドメイン名 <code>xxxx.cloudfront.net</code> をそのまま利用する</li>
+                <li>独自ドメインを使う場合は後日、以下を設定する方針
+                    <ul>
+                        <li>Alternate domain name (CNAME)</li>
+                        <li>ACM 証明書</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <p><strong>1-5. ディストリビューション作成と動作確認</strong></p>
+
+            <ol>
+                <li>画面下部の <strong>Create distribution</strong> をクリックし作成を開始</li>
+                <li>Distributions 一覧で対象ディストリビューションの Status が <code>Deploying</code> から <code>Enabled</code> になるまで待機</li>
+                <li>Status が Enabled になったら、その行の <strong>Domain name</strong> をメモ</li>
+                <li>ブラウザで <code>https://{CloudFront の Domain name}/index.html</code> にアクセスし、S3 にアップロードした <code>index.html</code> のログイン画面が表示されることを確認</li>
+                <li><code>https://{CloudFront の Domain name}/</code> にアクセスしたときに <code>AccessDenied</code> となる場合は、以下の手順で CloudFront のデフォルトルートオブジェクトを設定する
+                    <ol>
+                        <li>CloudFront コンソールで対象ディストリビューションを開き、<strong>一般 General</strong> タブで <strong>編集 Edit</strong> をクリック</li>
+                        <li><strong>Default root object</strong> に <code>index.html</code> と入力</li>
+                        <li>変更を保存し、ステータスが Deployed になるまで数分待つ</li>
+                        <li>再度 <code>https://{CloudFront の Domain name}/</code> にアクセスし、<code>index.html</code> が表示されることを確認</li>
+                    </ol>
+                </li>
+            </ol>
+
+            <p><strong>1-6. S3 バケットポリシーの更新 OAC 用</strong></p>
+
+            <ol>
+                <li>CloudFront コンソールで対象ディストリビューションを開き、<strong>Origins</strong> タブを選択</li>
+                <li>オリジンとして設定した S3 バケット行を選び <strong>Edit</strong> をクリック</li>
+                <li>画面内の「Update bucket policy」欄に表示されているサンプルポリシーをコピー</li>
+                <li>別タブで S3 コンソールを開き、対象バケット → <strong>Permissions</strong> → <strong>Bucket policy</strong> を表示</li>
+                <li>既存ポリシーを CloudFront 提示のサンプルポリシーで置き換え、保存</li>
+                <li>Block public access は有効のまま、CloudFront OAC 経由のみでアクセスさせる構成にする</li>
+                <li>必要に応じて、S3 website endpoint へのパブリックアクセスを無効化する（本番運用時）</li>
+            </ol>
+
+            <h4>2. S3 静的ホスティングバケットの作成</h4>
+
+            <p><strong>2-1. Webホスティング用バケット作成</strong></p>
+
+            <ol>
+                <li>AWS コンソール右上のリージョンが <code>米国西部 オレゴン us-west-2</code> になっていることを確認</li>
+                <li>サービス一覧から S3 を開く</li>
+                <li>「バケットを作成」をクリック</li>
+                <li>一般的な設定
+                    <ul>
+                        <li>AWS リージョン: <code>米国西部 オレゴン us-west-2</code> のまま</li>
+                        <li>バケット名: <code>blog-checker-web-example</code> など一意な名前を入力（小文字とハイフンのみ）</li>
+                        <li>既存のバケットから設定をコピー: 何も選ばずそのまま</li>
+                    </ul>
+                </li>
+                <li>オブジェクト所有者
+                    <ul>
+                        <li>「ACL 無効 推奨」を選択したままにする</li>
+                        <li>オブジェクト所有者は「バケット所有者」のままでOK</li>
+                    </ul>
+                </li>
+                <li>このバケットのブロックパブリックアクセス設定
+                    <ul>
+                        <li>4つのチェックボックスはすべてオンのままにしておく</li>
+                        <li>注意書きに「パブリックアクセスを許可しない」と出ている状態でOK</li>
+                        <li>後で CloudFront の OAC とバケットポリシーでアクセスを許可する方針</li>
+                    </ul>
+                </li>
+                <li>下の方へスクロールし、バージョニングや暗号化などはデフォルトのまま（今回は何も変更しない）</li>
+                <li>画面右下の「バケットを作成」をクリック</li>
+                <li>バケット一覧に今付けた名前が表示されていることを確認し、ビルドログに実際のバケット名をメモ</li>
+            </ol>
+
+            <p><strong>2-2. 静的Webサイトホスティングの有効化</strong></p>
+
+            <ol>
+                <li>AWS コンソールで S3 を開く</li>
+                <li>バケット一覧から、さきほど作成した <code>blog-checker-web-example</code> など対象バケットの <strong>バケット名のリンク</strong> をクリック</li>
+                <li>バケット詳細画面の上部にあるタブから <strong>Properties プロパティ</strong> をクリック</li>
+                <li>Properties 画面を下方向にスクロールし、<strong>Static website hosting 静的Webサイトホスティング</strong> のセクションを探す</li>
+                <li>Static website hosting セクションの右側にある <strong>Edit 編集</strong> ボタンをクリック</li>
+                <li>Hosting type の選択肢から <strong>Host a static website 静的ウェブサイトをホストする</strong> を選択</li>
+                <li>Index document に <code>index.html</code> と入力</li>
+                <li>Error document は空でもよいが、後で作る場合は <code>error.html</code> と入力しておく</li>
+                <li>画面右下の <strong>Save changes 変更を保存</strong> をクリック</li>
+                <li>Static website hosting セクションに <code>Bucket website endpoint</code> が表示されるので、URL をビルドログにメモ</li>
+            </ol>
+
+            <p><strong>2-3. 初期コンテンツのアップロード</strong></p>
+
+            <p>ここではローカルの <code>blog-checker-web/dist/</code> にある <code>index.html</code> を、S3 バケットにアップロードする。</p>
+
+            <ol>
+                <li>ローカルで <code>blog-checker-web/dist/index.html</code> が存在することを確認</li>
+                <li>AWS コンソールで S3 を開き、対象バケット <code>blog-checker-web-example</code> などのバケット名リンクをクリック</li>
+                <li>上部タブが <code>Objects</code> になっていることを確認</li>
+                <li>画面右上の <strong>「アップロード」</strong> ボタンをクリック</li>
+                <li>アップロード画面で <strong>「ファイルを追加」</strong> をクリックし、ローカルの <code>dist/index.html</code> を選択</li>
+                <li>画面下部までスクロールし、ストレージクラスなどはデフォルトの「スタンダード」のままでよい</li>
+                <li>アクセス許可はデフォルトのまま（パブリックアクセスは後で CloudFront OAC 経由にする）</li>
+                <li>右下の <strong>「アップロード」</strong> ボタンを押す</li>
+                <li>アップロード完了メッセージが出たら、<code>Objects</code> タブに戻り <code>index.html</code> が1件表示されていることを確認</li>
+            </ol>
+
+            <h4>3. Cognito ユーザプールの作成</h4>
+
+            <p>ここでは、ブログ記事チェックエンジンのログイン認証に使う Cognito ユーザプールを作成する。フロントエンド（CloudFront + S3）のログイン画面から接続するための準備までを行う。</p>
+
+            <p><strong>3-1. ユーザプールの新規作成</strong></p>
+
+            <ol>
+                <li>AWS コンソール右上のリージョンが <code>US West (Oregon) us-west-2</code> であることを確認</li>
+                <li>サービス一覧から <strong>Cognito</strong> を開く</li>
+                <li>左メニューの <strong>User pools ユーザープール</strong> を選択</li>
+                <li>右上の <strong>Create user pool</strong> をクリック</li>
+                <li>"Configure sign-in experience" 画面で次を設定
+                    <ul>
+                        <li>Cognito user pool を選択（外部IdPは今回は使わない）</li>
+                        <li>サインインオプション: <strong>Email</strong> のみにチェック（ユーザ名ではなくメールアドレスでログイン）</li>
+                        <li>Next をクリック</li>
+                    </ul>
+                </li>
+                <li>"Configure security requirements" 画面
+                    <ul>
+                        <li>パスワードポリシー: デフォルトのまま（最小8文字など）でよい</li>
+                        <li>Multi-factor authentication (MFA): <strong>No MFA</strong> を選択（PoCのため）</li>
+                        <li>その他の設定はデフォルトのまま Next</li>
+                    </ul>
+                </li>
+                <li>"Configure sign-up experience" 画面
+                    <ul>
+                        <li>Self-service sign-up: 必要に応じて ON（自分でサインアップしたい場合）</li>
+                        <li>Required attributes: <strong>email</strong> のみ Required にする</li>
+                        <li>Attribute verification: <strong>Email</strong> にチェック（メール検証）</li>
+                        <li>Next をクリック</li>
+                    </ul>
+                </li>
+                <li>"Configure message delivery" 画面
+                    <ul>
+                        <li>デフォルトの Cognito email provider を使用（SES は設定しない）</li>
+                        <li>Next をクリック</li>
+                    </ul>
+                </li>
+                <li>"Integrate your app" 画面
+                    <ul>
+                        <li>User pool name: <code>blog-checker-user-pool</code> など分かりやすい名前</li>
+                        <li>アプリケーションクライアントの設定は 3-2 で行うため、そのまま Next</li>
+                    </ul>
+                </li>
+                <li>Review 画面で設定内容を確認し、問題なければ <strong>Create user pool</strong> をクリック</li>
+                <li>作成されたユーザプールID（例: <code>&lt;your_user_pool_id&gt;</code>）をメモ</li>
+            </ol>
+
+            <p><strong>3-2. アプリクライアント（Webフロント用）の作成</strong></p>
+
+            <ol>
+                <li>作成したユーザプールを開き、左メニューから <strong>App integration</strong> → <strong>App clients</strong> を選択</li>
+                <li><strong>Create app client</strong> をクリック</li>
+                <li>App client name に <code>blog-checker-web-client</code> などを入力</li>
+                <li>Authorized client type:
+                    <ul>
+                        <li><strong>Public client</strong> を選択（フロントエンドJavaScriptから直接呼び出すためシークレットは持たない）</li>
+                    </ul>
+                </li>
+                <li>Authentication flows:
+                    <ul>
+                        <li>USER_PASSWORD や USER_SRP のようなユーザパスワード認証フローを有効化（デフォルトのままでよい）</li>
+                    </ul>
+                </li>
+                <li>OAuth 2.0 設定は当面スキップしてもよい（必要になったら Hosted UI と併せて設定する）</li>
+                <li>その他の設定はデフォルトのまま <strong>Create app client</strong> をクリック</li>
+                <li>作成された App client ID（例：<code>&lt;your_app_client_id&gt;</code>）をメモ</li>
+            </ol>
+
+            <p><strong>3-3. ドメイン設定（Hosted UI 用・将来のための準備）</strong></p>
+
+            <ol>
+                <li>ユーザプール画面の <strong>App integration</strong> → <strong>Domain name</strong> を開く</li>
+                <li>Cognito ドメインのプレフィックスに <code>blog-checker-auth</code> など一意な文字列を入力</li>
+                <li><code>auth.us-west-2.amazoncognito.com</code> などのドメインが問題なく取得できることを確認し、保存</li>
+                <li>生成されたドメインURL（例: <code>https://&lt;your-domain-prefix&gt;.auth.us-west-2.amazoncognito.com</code>）をメモ</li>
+            </ol>
+
+            <p><strong>3-4. CloudFront / フロントエンドとの接続準備メモ</strong></p>
+
+            <p>フロントエンド（<code>https://&lt;your-cloudfront-domain&gt;/</code>）から Cognito に接続するために必要な情報:</p>
+
+            <ul>
+                <li>リージョン: <code>us-west-2</code></li>
+                <li>User Pool ID: <code>&lt;your_user_pool_id&gt;</code></li>
+                <li>App client ID: <code>&lt;your_app_client_id&gt;</code></li>
+                <li>Cognito ドメイン: <code>https://&lt;your-domain-prefix&gt;.auth.us-west-2.amazoncognito.com</code></li>
+            </ul>
+
+            <p>これらは後で <code>assets/js/app.js</code> に設定値として埋め込み、ログインフォームから Cognito のサインインAPIを呼び出す実装に使う。</p>
+
+            <p>Hosted UI を使う場合は、Cognito 側のアプリクライアント設定で Callback URL / Sign out URL に CloudFront の URL を登録する必要がある（後続タスク）。</p>
+
+            <h4>4. Git / GitHub 初期設定メモ</h4>
+
+            <p><strong>4-1. ローカルリポジトリの作成</strong></p>
+
+            <ol>
+                <li>ローカルで <code>blog-checker-web/</code> ディレクトリに移動</li>
+                <li>次を実行して Git リポジトリを初期化</li>
+            </ol>
+
+            <pre><code>cd blog-checker-web
+git init</code></pre>
+
+            <ol start="3">
+                <li><code>.gitignore</code> を作成し、<code>dist/</code> や一時ファイルを除外（後で追記してもよい）</li>
+            </ol>
+
+            <pre><code># .gitignore の例
+node_modules/
+dist/
+.DS_Store
+.env</code></pre>
+
+            <ol start="4">
+                <li>初回コミット</li>
+            </ol>
+
+            <pre><code>git add .
+git commit -m "Initial commit: blog checker web skeleton"</code></pre>
+
+            <p><strong>4-2. GitHub リポジトリとの連携</strong></p>
+
+            <ol>
+                <li>GitHub 上で新しいリポジトリを作成
+                    <ul>
+                        <li>リポジトリ名: <code>blog-checker-web-demo</code></li>
+                        <li>README や .gitignore の自動生成はどちらでもよい（今回はローカルから push）</li>
+                    </ul>
+                </li>
+                <li>GitHub が表示する <code>git remote</code> / <code>push</code> コマンドを参考に、ローカルから次を実行</li>
+            </ol>
+
+            <pre><code>git remote add origin git@github.com:&lt;your-account&gt;/blog-checker-web-demo.git
+git branch -M main
+git push -u origin main</code></pre>
+
+            <ol start="3">
+                <li>上記コマンド実行により、GitHub 上の <code>&lt;your-account&gt;/blog-checker-web-demo</code> リポジトリに初期コードを反映</li>
+            </ol>
+
+            <p><strong>4-3. デプロイとの関係</strong></p>
+
+            <ul>
+                <li>将来的に GitHub Actions で自動デプロイする場合は、この <code>blog-checker-web-demo</code> リポジトリをトリガーにする想定。</li>
+                <li>当面はローカルから S3 へのアップロード（手動またはシェルスクリプト）とし、GitHub はコード履歴管理とバックアップ用途から始める。</li>
+            </ul>
+
+            <h4>■今後のタスク候補メモ</h4>
+
+            <ul>
+                <li>ローカルデプロイスクリプト（<code>deploy.sh</code>）を作成し、<code>dist/ -&gt; S3</code> と CloudFront キャッシュ無効化を自動化</li>
+                <li>GitHub Actions ワークフロー（<code>.github/workflows/deploy.yml</code>）を追加し、<code>main</code> ブランチへの push をトリガーに自動デプロイ</li>
+                <li>ブログ記事チェックロジックをプラグイン風に整理し、将来の申請書チェックプラグイン構造に寄せて設計</li>
+                <li>認証済みユーザ情報（id_token）を使って、将来の API Gateway / Lambda 連携のための Authorization ヘッダ付与処理を検討</li>
+            </ul>
+
+            <p>※ CloudFront ドメイン名、Cognito の User Pool ID / Client ID、GitHub アカウント名などの固有情報は、ブログ公開用にプレースホルダ（<code>&lt;your-...&gt;</code> や <code>xxxx.cloudfront.net</code> など）に置き換えています。</p>
+        </article>
+
+        <div class="share-button">
+            <a href="#" onclick="shareToX(); return false;">share</a>
+        </div>
+
+        <div class="view-counter">
+            <img src="https://komarev.com/ghpvc/?username=techs-targe-blog-006&label=views&color=000000&style=flat-square" alt="views" />
+        </div>
+    </div>
+
+    <script>
+        function shareToX() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('AWSで様々なチェック処理を効率化するシステムを構築する（1） - techs-targe');
+            const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+    </script>
+</body>
+</html>
